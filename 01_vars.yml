@@ -15,3 +15,14 @@
       ansible.builtin.package:
         name: "{{ package }}"
         state: present
+
+    - name: Enable httpd service
+      ansible.builtin.systemd:
+        name: httpd
+        state: started
+        enabled: true
+      register: httpd_status
+
+    - name: Show Status
+      ansible.builtin.debug:
+        var: httpd_status
