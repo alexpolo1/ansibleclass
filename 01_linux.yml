@@ -4,8 +4,8 @@
   become: true
 
   tasks:
-  - name: Create file
-    ansible.builtin.file:
-      path: /root/testfile.txt
-      state: touch
-      mode: '0755'
+    - name: Create file
+      ansible.builtin.file:
+        path: /root/testfile.txt
+        state: touch
+        mode: '0755'
