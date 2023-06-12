@@ -1,0 +1,13 @@
+---
+- name: Vars
+  hosts: linuxservers
+  become: true
+
+  vars:
+    package: httpd
+
+  tasks:
+    - name: Install Packages
+      ansible.builtin.package:
+        name: "{{ package }}"
+        state: present
