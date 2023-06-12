@@ -9,7 +9,7 @@
       - mariadb-server
       - php
       - php-mysqlnd
-      
+
   tasks:
     - name: Install Packages
       ansible.builtin.package:
