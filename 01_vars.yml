@@ -31,3 +31,19 @@
       ansible.builtin.debug:
         msg: httpd is running
       when: httpd_status.state == "started"
+
+    - name: Configure firewall
+      ansible.posix.firewalld:
+        zone: public
+        service: http
+        permanent: true
+        state: enabled
+      notify: Firewall reload
+
+  handlers:
+    - name: Firewall reload
+      ansible.builtin.systemd:
+        name: firewalld
+        state: reloaded
+
+
