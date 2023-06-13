@@ -27,3 +27,52 @@
         virtual_network_name: "{{ virtual_network_name }}"
         name: "{{ subnet }}"
         address_prefix_cidr: "10.99.0.0/24"
+
+
+    - name: Create a public ip address for webserver
+      azure_rm_publicipaddress:
+        resource_group: "{{ resource_group }}"
+        name: public_ip_webserver
+        allocation_method: static
+        domain_name: "webserver{{ domain_sub }}"
+        tags:
+            solution: "webserver_{{ user }}"
+            delete: ansibletraining
+      register: webserver_pub_ip
+
+    - name: Create Security Group for webserver
+      azure_rm_securitygroup:
+        resource_group: "{{ resource_group }}"
+        name: "webserver_securitygroup"
+        purge_rules: true
+        rules:
+            - name: Allow_SSH
+              protocol: Tcp
+              destination_port_range: 22
+              access: Allow
+              priority: 100
+              direction: Inbound
+            - name: Allow_HTTP
+              protocol: Tcp
+              destination_port_range: 80
+              access: Allow
+              priority: 101
+              direction: Inbound
+        tags:
+            solution: "webserver_{{ user }}"
+            delete: ansibletraining
+
+    - name: Create a network interface for webserver
+      azure_rm_networkinterface:
+        name: "webserver_nic01"
+        resource_group: "{{ resource_group }}"
+        virtual_network: "{{ virtual_network_name }}"
+        subnet_name: "{{ subnet }}"
+        security_group: "webserver_securitygroup"
+        ip_configurations:
+          - name: "webserver_nic01_ipconfig"
+            public_ip_address_name: "public_ip_webserver"
+            primary: True
+        tags:
+            solution: "webserver_{{ user }}"
+            delete: ansibletraining
