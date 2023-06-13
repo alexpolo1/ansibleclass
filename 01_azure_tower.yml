@@ -1,0 +1,18 @@
+---
+- name: Azure Create RG
+  hosts: localhost
+  connection: local
+  vars:
+    user: alex
+  tasks:
+    - name: Create resource group
+      azure.azcollection.azure_rm_resourcegroup:
+        name: "webserver_{{ user }}"
+        location: northeurope
+        tags:
+            solution: "webserver_{{ user }}"
+            delete: ansibletraining
+      register: rg
+    - name: Show RG
+      ansible.builtin.debug:
+        var: rg
