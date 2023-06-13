@@ -1,0 +1,39 @@
+---
+- name: Configure Webserver
+  hosts: tag_solution_webserver_alex
+  become: true
+
+  tasks:
+    - name: Install Apache
+      ansible.builtin.dnf:
+        name: httpd
+        state: present
+
+    - name: Enable Apache
+      ansible.builtin.systemd:
+        name: httpd
+        enabled: true
+        state: started
+
+    - name: Allow http in firewall
+      ansible.posix.firewalld:
+        service: http
+        permanent: true
+        state: enabled
+        immediate: true
+      notify:
+        - Reload firewall
+
+    - name: Add index.html
+      ansible.builtin.template:
+        src: index.html.j2
+        dest: /var/www/html/index.html
+        owner: root
+        group: root
+        mode: "0755"
+
+  handlers:
+    - name: Reload firewall
+      ansible.builtin.service:
+        name: firewalld
+        state: reloaded
