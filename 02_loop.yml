@@ -1,0 +1,34 @@
+---
+- name: Loop Async
+  hosts: linuxservers
+  become: true
+
+  tasks:
+    - name: Create dir /mnt/resource/
+      ansible.builtin.file:
+        path: /mnt/resource/
+        state: directory
+        mode: '0755'
+
+    - name: Download files
+      ansible.builtin.get_url:
+        url: "{{ item }}"
+        dest: /mnt/resource/
+        mode: '0600'
+      loop:
+        - https://github.com/git-for-windows/git/releases/download/v2.30.0.windows.1/Git-2.30.0-64-bit.exe
+        - https://www.python.org/ftp/python/3.8.7/python-3.8.7-embed-amd64.zip
+        - https://releases.ansible.com/ansible-tower/setup/ansible-tower-setup-latest.tar.gz
+      async: 2
+      poll: 0
+      register: download_loop
+
+    - name: Wait for downloads
+      ansible.builtin.async_status:
+        jid: "{{ item.ansible_job_id }}"
+        mode: status
+      retries: 300
+      delay: 1
+      loop: "{{ download_loop.results }}"
+      register: async_loop_jobs
+      until: async_loop_jobs.finished
