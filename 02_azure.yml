@@ -76,3 +76,40 @@
         tags:
             solution: "webserver_{{ user }}"
             delete: ansibletraining
+
+    - name: Create a VM webserver
+      azure_rm_virtualmachine:
+        resource_group: "{{ resource_group }}"
+        name: "webserver"
+        os_type: Linux
+        admin_username: "{{ user }}"
+        ssh_password_enabled: false
+        ssh_public_keys:
+          - path: "/home/{{ user }}/.ssh/authorized_keys"
+            key_data: "{{ ssh_public_key }}"
+        managed_disk_type: Standard_LRS
+        state: present
+        image:
+          offer: RHEL
+          publisher: RedHat
+          sku: "8_4"
+          version: latest
+        vm_size: Standard_A1_v2
+        network_interfaces: "webserver_nic01"
+        tags:
+            solution: "webserver_{{ user }}"
+            delete: ansibletraining
+
+    - name: Show webserver public ip
+      debug:
+        msg: "{{ webserver_pub_ip.state.ip_address }}"
+
+    - name: Wait for ssh on webserver
+      ansible.builtin.wait_for:
+        host: "{{ webserver_pub_ip.state.ip_address }}"
+        port: 22
+        delay: 10
+        timeout: 600
+
+    - name: Add webserver to ssh known_hosts
+      shell: "ssh-keyscan -t ecdsa {{ webserver_pub_ip.state.ip_address }}  >> /home/{{ user }}/.ssh/known_hosts"
