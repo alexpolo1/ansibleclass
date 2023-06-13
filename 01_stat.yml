@@ -1,0 +1,27 @@
+---
+- name: Use Ansible Stat
+  hosts: linuxservers
+  become: true
+
+  tasks:
+    - name: Check if aws-cli is downloaded
+      ansible.builtin.stat:
+        path: ~/awscliv2.zip
+      register: awsfile
+
+    - name: Debug awsfile
+      ansible.builtin.debug:
+        msg: "{{ awsfile }}"
+
+    - name: Download aws-cli
+      ansible.builtin.get_url:
+        url: https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip
+        dest: ~/awscliv2.zip
+        mode: '0700'
+      when: not awsfile.stat.exists
+
+    - name: Unzip aws-cli
+      ansible.builtin.unarchive:
+        src: ~/awscliv2.zip
+        dest: ~/
+        remote_src: true
