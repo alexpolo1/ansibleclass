@@ -1,2 +1,9 @@
 ---
 # defaults file for webserver
+package:
+    - httpd
+    - mod_ssl
+    - openssl
+    - php
+    - php-gd
+    - php-mbstring

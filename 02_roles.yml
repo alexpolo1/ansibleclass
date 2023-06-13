@@ -1,0 +1,16 @@
+---
+- name: Webserver Role
+  hosts: linuxservers
+  become: true
+
+  roles:
+    - webserver
+
+  tasks:
+    - name: Copy Index.php
+      ansible.builtin.copy:
+        src: index.php
+        dest: /var/www/html/index.php
+        owner: root
+        group: root
+        mode: '0755'

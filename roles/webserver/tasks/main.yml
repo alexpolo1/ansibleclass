@@ -1,2 +1,21 @@
 ---
 # tasks file for webserver
+- name: Install Packages
+  ansible.builtin.package:
+    name: "{{ package }}"
+    state: present
+  notify: Httpd restart
+
+- name: Enable httpd service
+  ansible.builtin.systemd:
+    name: httpd
+    state: started
+    enabled: true
+
+- name: Configure firewall
+  ansible.posix.firewalld:
+    zone: public
+    service: http
+    permanent: true
+    state: enabled
+  notify: Firewall reload

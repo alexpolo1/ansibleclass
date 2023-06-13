@@ -1,2 +1,11 @@
 ---
 # handlers file for webserver
+- name: Firewall reload
+  ansible.builtin.systemd:
+    name: firewalld
+    state: reloaded
+
+- name: Httpd restart
+  ansible.builtin.systemd:
+    name: httpd
+    state: restarted
