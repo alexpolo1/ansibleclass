@@ -11,26 +11,40 @@
       - php-mysqlnd
 
   tasks:
-    - name: Install Packages
-      ansible.builtin.package:
-        name: "{{ package }}"
-        state: present
+    - name: Install and configure Webserver
+      when: ansible_facts['distribution'] == 'RedHat'
+      block:
+        - name: Install Packages
+          ansible.builtin.package:
+            name: "{{ package }}"
+            state: present
 
-    - name: Enable httpd service
-      ansible.builtin.systemd:
-        name: httpd
-        state: started
-        enabled: true
-      register: httpd_status
+        - name: Enable httpd service
+          ansible.builtin.systemd:
+            name: httpd
+            state: started
+            enabled: true
+          register: httpd_status
 
-    - name: Show Status
-      ansible.builtin.debug:
-        var: httpd_status
+        - name: Show Status
+          ansible.builtin.debug:
+            var: httpd_status
 
-    - name: Is httpd running
-      ansible.builtin.debug:
-        msg: httpd is running
-      when: httpd_status.state == "started"
+        - name: Is httpd running
+          ansible.builtin.debug:
+            msg: httpd is running
+          when: httpd_status.state == "started"
+
+      rescue:
+        - name: Print when errors
+          ansible.builtin.debug:
+            msg: 'There is an error in this block)'
+
+      always:
+        - name: Always do this
+          ansible.builtin.debug:
+            msg: "Will always run"
+
 
     - name: Configure firewall
       ansible.posix.firewalld:
