@@ -1,0 +1,22 @@
+---
+- name: Create Group and user
+  hosts: domaincontroller
+  vars:
+    domain: ansible.local
+
+  tasks:
+    - name: Create Group
+      community.windows.win_domain_group:
+        name: corp
+        scope: global
+        state: present
+
+    - name: Create user
+      community.windows.win_domain_user:
+        name: basim
+        firstname: Bart
+        surname: Simpson
+        password: P@ssw0rd!
+        state: present
+        groups:
+        - corp
