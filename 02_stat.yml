@@ -1,0 +1,15 @@
+---
+- name: Use Ansible Shell
+  hosts: linuxservers
+  become: true
+
+  tasks:
+    - name: Check if aws-cli is installed
+      ansible.builtin.stat:
+        path: /usr/local/aws-cli
+      register: awsinstallfile
+
+    - name: Install aws-cli
+      ansible.builtin.shell: |
+        ~/aws/install
+      when: not awsinstallfile.stat.exists
