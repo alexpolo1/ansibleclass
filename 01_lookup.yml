@@ -1,0 +1,11 @@
+---
+- name: Lookup
+  hosts: linuxservers
+
+  vars:
+    environment: "{{ lookup('file', 'file.txt') }}"
+
+  tasks:
+    - name: Debug Write File Content
+      ansible.builtin.debug:
+        msg: "{{ environment }}"
