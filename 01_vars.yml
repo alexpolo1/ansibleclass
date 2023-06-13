@@ -13,7 +13,7 @@
   tasks:
     - name: Install and configure Webserver
       when: ansible_facts['distribution'] == 'RedHat'
-      tag:
+      tags:
         - install
         - config
       block:
