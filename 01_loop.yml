@@ -1,21 +1,26 @@
 ---
-- name: Loop
+- name: Loop 2
   hosts: linuxservers
   become: true
 
   tasks:
     - name: Ensure group developers exists
       ansible.builtin.group:
-        name: Developers
+        name: "{{ item }}"
         state: present
+      loop:
+        - It
+        - Developers
+        - Finance
+        - Management
 
     - name: Create Users
       ansible.builtin.user:
-        name: "{{ item }}"
-        group: Developers
+        name: "{{ item.name }}"
+        group: "{{ item.groups }}"
       loop:
-        - homer
-        - bart
-        - lisa
-        - ned
-        - moe
+        - { name: 'homer', groups: 'Developers' }
+        - { name: 'bart', groups: 'It' }
+        - { name: 'lisa', groups: 'Management' }
+        - { name: 'ned', groups: 'Finance' }
+        - { name: 'moe', groups: 'Developers' }
