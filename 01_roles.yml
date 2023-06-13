@@ -1,0 +1,7 @@
+---
+- name: Roles
+  hosts: linuxservers
+  become: true
+
+  roles:
+      - jesperberth.el_httpd

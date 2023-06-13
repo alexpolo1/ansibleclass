@@ -9,7 +9,7 @@
         path: /usr/local/aws-cli
       register: awsinstallfile
 
-    - name: Install aws-cli
-      ansible.builtin.shell: |
-        ~/aws/install
-      when: not awsinstallfile.stat.exists
+#    - name: Install aws-cli
+#      ansible.builtin.shell: |
+#        ~/aws/install
+#      when: not awsinstallfile.stat.exists
