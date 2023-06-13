@@ -1,0 +1,13 @@
+<html>
+    <header>
+        <title>{{ websiteheader }}</title></header>
+
+        <body>
+            <h1>Welcome to {{ websiteheader }}</h1>
+
+            <h3>This site was created with Ansible by {{ websiteauthor }}
+
+            <p>Hosted on {{ inventory_hostname }} running {{ ansible_facts['os_family'] }}<p>
+
+        </body>
+</html>
