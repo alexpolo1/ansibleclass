@@ -19,8 +19,8 @@
         name: "{{ item.name }}"
         group: "{{ item.groups }}"
       loop:
-        - { name: 'homer', groups: 'Developers' }
-        - { name: 'bart', groups: 'It' }
-        - { name: 'lisa', groups: 'Management' }
-        - { name: 'ned', groups: 'Finance' }
-        - { name: 'moe', groups: 'Developers' }
+        - { name: homer, groups: Developers }
+        - { name: bart, groups: It }
+        - { name: lisa, groups: Management }
+        - { name: ned, groups: Finance }
+        - { name: moe, groups: Developers }

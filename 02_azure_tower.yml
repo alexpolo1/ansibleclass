@@ -5,87 +5,85 @@
   vars:
     user: alex
     location: northeurope
-    virtual_network_name: "webserver_{{ user }}"
+    virtual_network_name: webserver_{{ user }}
     subnet: Webserver
-    resource_group: "webserver_{{ user }}"
-    domain_sub: "domain{{ user }}"
-
+    resource_group: webserver_{{ user }}
+    domain_sub: domain{{ user }}
 
   tasks:
     - name: Create a virtual network
       azure.azcollection.azure_rm_virtualnetwork:
         resource_group: "{{ resource_group }}"
         name: "{{ virtual_network_name }}"
-        address_prefixes_cidr: "10.99.0.0/16"
+        address_prefixes_cidr: 10.99.0.0/16
         tags:
-            solution: "webserver_{{ user }}"
-            delete: ansibletraining
+          solution: webserver_{{ user }}
+          delete: ansibletraining
 
     - name: Create a subnet
       azure.azcollection.azure_rm_subnet:
         resource_group: "{{ resource_group }}"
         virtual_network_name: "{{ virtual_network_name }}"
         name: "{{ subnet }}"
-        address_prefix_cidr: "10.99.0.0/24"
-
+        address_prefix_cidr: 10.99.0.0/24
 
     - name: Create a public ip address for webserver
-      azure_rm_publicipaddress:
+      register: webserver_pub_ip
+      azure.azcollection.azure_rm_publicipaddress:
         resource_group: "{{ resource_group }}"
         name: public_ip_webserver
         allocation_method: static
-        domain_name: "webserver{{ domain_sub }}"
+        domain_name: webserver{{ domain_sub }}
         tags:
-            solution: "webserver_{{ user }}"
-            delete: ansibletraining
-      register: webserver_pub_ip
+          solution: webserver_{{ user }}
+          delete: ansibletraining
 
     - name: Create Security Group for webserver
-      azure_rm_securitygroup:
+      azure.azcollection.azure_rm_securitygroup:
         resource_group: "{{ resource_group }}"
-        name: "webserver_securitygroup"
+        name: webserver_securitygroup
         purge_rules: true
         rules:
-            - name: Allow_SSH
-              protocol: Tcp
-              destination_port_range: 22
-              access: Allow
-              priority: 100
-              direction: Inbound
-            - name: Allow_HTTP
-              protocol: Tcp
-              destination_port_range: 80
-              access: Allow
-              priority: 101
-              direction: Inbound
+          - name: Allow_SSH
+            protocol: Tcp
+            destination_port_range: 22
+            access: Allow
+            priority: 100
+            direction: Inbound
+          - name: Allow_HTTP
+            protocol: Tcp
+            destination_port_range: 80
+            access: Allow
+            priority: 101
+            direction: Inbound
         tags:
-            solution: "webserver_{{ user }}"
-            delete: ansibletraining
+          solution: webserver_{{ user }}
+          delete: ansibletraining
 
     - name: Create a network interface for webserver
-      azure_rm_networkinterface:
-        name: "webserver_nic01"
+      azure.azcollection.azure_rm_networkinterface:
+        name: webserver_nic01
         resource_group: "{{ resource_group }}"
         virtual_network: "{{ virtual_network_name }}"
         subnet_name: "{{ subnet }}"
-        security_group: "webserver_securitygroup"
+        security_group: webserver_securitygroup
         ip_configurations:
-          - name: "webserver_nic01_ipconfig"
-            public_ip_address_name: "public_ip_webserver"
-            primary: True
+          - name: webserver_nic01_ipconfig
+            public_ip_address_name: public_ip_webserver
+            primary: true
         tags:
-            solution: "webserver_{{ user }}"
-            delete: ansibletraining
+          solution: webserver_{{ user }}
+          delete: ansibletraining
 
     - name: Create a VM webserver
-      azure_rm_virtualmachine:
+      azure.azcollection.azure_rm_virtualmachine:
         resource_group: "{{ resource_group }}"
-        name: "webserver"
+        name: webserver
         os_type: Linux
         admin_username: "{{ user }}"
         ssh_password_enabled: false
         ssh_public_keys:
-          - path: "/home/{{ user }}/.ssh/authorized_keys"
+          - path: /home/{{ user }}/.ssh/authorized_keys
             key_data: "{{ ssh_public_key }}"
         managed_disk_type: Standard_LRS
         state: present
@@ -95,13 +93,13 @@
           sku: "8_4"
           version: latest
         vm_size: Standard_A1_v2
-        network_interfaces: "webserver_nic01"
+        network_interfaces: webserver_nic01
         tags:
-            solution: "webserver_{{ user }}"
-            delete: ansibletraining
+          solution: webserver_{{ user }}
+          delete: ansibletraining
 
     - name: Show webserver public ip
-      debug:
+      ansible.builtin.debug:
         msg: "{{ webserver_pub_ip.state.ip_address }}"
 
     - name: Wait for ssh on webserver

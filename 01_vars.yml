@@ -41,13 +41,12 @@
       rescue:
         - name: Print when errors
           ansible.builtin.debug:
-            msg: 'There is an error in this block)'
+            msg: There is an error in this block)
 
       always:
         - name: Always do this
           ansible.builtin.debug:
-            msg: "Will always run"
-
+            msg: Will always run
 
     - name: Configure firewall
       ansible.posix.firewalld:
@@ -59,7 +58,6 @@
       tags:
         - firewall
         - config
-
 
   handlers:
     - name: Firewall reload

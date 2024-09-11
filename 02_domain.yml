@@ -19,4 +19,4 @@
         password: P@ssw0rd!
         state: present
         groups:
-        - corp
+          - corp

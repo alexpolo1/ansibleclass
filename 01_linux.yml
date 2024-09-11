@@ -8,8 +8,7 @@
       ansible.builtin.file:
         path: /root/testfile.txt
         state: touch
-        mode: '0755'
-
+        mode: "0755"
 
     - name: Add line in file
       ansible.builtin.lineinfile:

@@ -7,11 +7,11 @@
   tasks:
     - name: Create resource group
       azure.azcollection.azure_rm_resourcegroup:
-        name: "webserver_{{ user }}"
+        name: webserver_{{ user }}
         location: northeurope
         tags:
-            solution: "webserver_{{ user }}"
-            delete: ansibletraining
+          solution: webserver_{{ user }}
+          delete: ansibletraining
       register: rg
     - name: Show RG
       ansible.builtin.debug:
