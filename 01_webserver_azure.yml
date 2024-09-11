@@ -3,8 +3,8 @@
   hosts: tag_solution_webserver_alex
   become: true
   vars:
-    websiteheader: "Ansible Playbook"
-    websiteauthor: "Alex"
+    websiteheader: Ansible Playbook
+    websiteauthor: Alex
 
   tasks:
     - name: Install Apache
